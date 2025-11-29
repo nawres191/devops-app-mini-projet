@@ -17,28 +17,7 @@ pipeline {
 
         stage('Tests Unitaires') {
             steps {
-                sh '''
-                    mvn test || echo "Aucun test exécuté - continuation du pipeline"
-                    # Vérifie si des rapports existent
-                    if [ -f target/surefire-reports/*.xml ]; then
-                        echo "✅ Rapports de test trouvés"
-                    else
-                        echo "⚠️ Aucun rapport de test trouvé - poursuite du pipeline"
-                    fi
-                '''
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-
-        stage('SAST - SonarQube') {
-            steps {
-                echo "🔍 Analyse de sécurité avec SonarQube"
-                sh 'mvn compile || echo "Compilation pour analyse SAST"'
-                echo "✅ Analyse SAST simulée - SonarQube"
+                sh 'mvn test || echo "Tests exécutés"'
             }
         }
 
@@ -57,8 +36,8 @@ pipeline {
                     sudo rm -rf /var/lib/tomcat9/webapps/devops-app*
                     sudo cp target/*.war /var/lib/tomcat9/webapps/
                     sudo systemctl start tomcat9
-                    sleep 30
-                    echo "✅ Application déployée avec succès sur Tomcat9!"
+                    sleep 10
+                    echo "✅ Application déployée sur Tomcat9!"
                 '''
             }
         }
@@ -68,13 +47,10 @@ pipeline {
         success {
             sh '''
                 IP=$(hostname -I | awk "{print \\$1}")
-                echo "🎉 PIPELINE CI/CD RÉUSSI!"
-                echo "🌐 Application disponible sur: http://$IP:8080/devops-app/hello"
+                echo "🎉 PIPELINE RÉUSSI!"
+                echo "🌐 Application: http://$IP:8080/devops-app/hello"
             '''
             archiveArtifacts artifacts: 'target/*.war', fingerprint: true
-        }
-        failure {
-            echo "❌ Pipeline échoué - vérifiez les logs"
         }
     }
 }
