@@ -32,10 +32,10 @@ pipeline {
             steps {
                 sh '''
                     echo "🚀 Déploiement sur Tomcat9..."
-                    systemctl stop tomcat9
-                    rm -rf /var/lib/tomcat9/webapps/devops-app*
-                    cp target/*.war /var/lib/tomcat9/webapps/
-                    systemctl start tomcat9
+                    sudo systemctl stop tomcat9
+                    sudo rm -rf /var/lib/tomcat9/webapps/devops-app*
+                    sudo cp target/*.war /var/lib/tomcat9/webapps/
+                    sudo systemctl start tomcat9
                     sleep 10
                     echo "✅ Application déployée sur Tomcat9!"
                 '''
