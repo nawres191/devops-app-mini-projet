@@ -13,6 +13,11 @@ public class HelloServlet extends HttpServlet {
 
         out.println("<html>");
         out.println("<head><title>Mini Projet DevOps</title></head>");
+        out.println("<div style='margin-top: 30px; padding: 20px; background-color: #f0f0f0;'>");
+        out.println("<h3 style='color: purple;'>Nouvelle Fonctionnalité !!</h3>");
+        out.println("<p>✅ Branch: new_feature</p>");
+        out.println("<p>✅ Date: " + new java.util.Date() + "</p>");
+        out.println("</div>");
         out.println("<body style='text-align: center; margin-top: 100px; font-family: Arial;'>");
         out.println("<h1 style='color: blue;'>🚀 Mini Projet DevOps Réussi!</h1>");
         out.println("<h2 style='color: green;'>Hello Nawres!! 👋</h2>");
