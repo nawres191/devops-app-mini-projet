@@ -17,20 +17,19 @@ pipeline {
 
         stage('Tests Unitaires') {
             steps {
-                sh 'mvn test || echo "Aucun test exécuté - continuation du pipeline"'
+                sh '''
+                    mvn test || echo "Aucun test exécuté - continuation du pipeline"
+                    # Vérifie si des rapports existent
+                    if [ -f target/surefire-reports/*.xml ]; then
+                        echo "✅ Rapports de test trouvés"
+                    else
+                        echo "⚠️ Aucun rapport de test trouvé - poursuite du pipeline"
+                    fi
+                '''
             }
             post {
                 always {
-                    script {
-                        // Vérifie si des rapports de test existent avant de publier
-                        def testReports = findFiles(glob: 'target/surefire-reports/*.xml')
-                        if (!testReports.isEmpty()) {
-                            junit 'target/surefire-reports/*.xml'
-                            echo "✅ Rapports de test publiés"
-                        } else {
-                            echo "⚠️ Aucun rapport de test trouvé - poursuite du pipeline"
-                        }
-                    }
+                    junit 'target/surefire-reports/*.xml'
                 }
             }
         }
