@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    tools {
-        maven 'M3'
-        jdk 'JDK21'
-    }
 
     stages {
         stage('Checkout SCM') {
@@ -34,27 +30,27 @@ pipeline {
             steps {
                 echo "🔍 Analyse de sécurité avec SonarQube"
                 sh 'mvn compile || echo "Compilation pour analyse SAST"'
-                echo " Analyse SAST simulée - SonarQube"
+                echo "✅ Analyse SAST simulée - SonarQube"
             }
         }
 
         stage('Package WAR') {
             steps {
                 sh 'mvn package -DskipTests'
-                echo " WAR file généré avec succès"
+                echo "✅ WAR file généré avec succès"
             }
         }
 
         stage('Deploiement Tomcat9') {
             steps {
                 sh '''
-                    echo " Déploiement sur Tomcat9..."
+                    echo "🚀 Déploiement sur Tomcat9..."
                     sudo systemctl stop tomcat9
                     sudo rm -rf /var/lib/tomcat9/webapps/devops-app*
                     sudo cp target/*.war /var/lib/tomcat9/webapps/
                     sudo systemctl start tomcat9
                     sleep 30
-                    echo " Application déployée avec succès sur Tomcat9!"
+                    echo "✅ Application déployée avec succès sur Tomcat9!"
                 '''
             }
         }
@@ -64,13 +60,13 @@ pipeline {
         success {
             sh '''
                 IP=$(hostname -I | awk "{print \\$1}")
-                echo " PIPELINE CI/CD RÉUSSI!"
-                echo " Application disponible sur: http://$IP:8080/devops-app/hello"
+                echo "🎉 PIPELINE CI/CD RÉUSSI!"
+                echo "🌐 Application disponible sur: http://$IP:8080/devops-app/hello"
             '''
             archiveArtifacts artifacts: 'target/*.war', fingerprint: true
         }
         failure {
-            echo " Pipeline échoué - vérifiez les logs"
+            echo "❌ Pipeline échoué - vérifiez les logs"
         }
     }
 }
