@@ -28,19 +28,21 @@ pipeline {
             }
         }
 
-       stage('Deploiement Tomcat9') {
-           steps {
-               sh '''
-                   echo "🚀 Déploiement sur Tomcat9..."
-                   systemctl stop tomcat9
-                   rm -rf /var/lib/tomcat9/webapps/devops-app*
-                   cp target/*.war /var/lib/tomcat9/webapps/
-                   systemctl start tomcat9
-                   sleep 10
-                   echo "✅ Application déployée sur Tomcat9!"
-               '''
-           }
-       }
+        stage('Deploiement Tomcat9') {
+            steps {
+                sh '''
+                    echo "🚀 Déploiement sur Tomcat9..."
+                    systemctl stop tomcat9
+                    rm -rf /var/lib/tomcat9/webapps/devops-app*
+                    cp target/*.war /var/lib/tomcat9/webapps/
+                    systemctl start tomcat9
+                    sleep 10
+                    echo "✅ Application déployée sur Tomcat9!"
+                '''
+            }
+        }
+    }  // ← CETTE ACCOLADE FERME "stages" - ELLE MANQUAIT !
+
     post {
         success {
             sh '''
